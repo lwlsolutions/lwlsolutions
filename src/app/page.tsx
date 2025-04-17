@@ -115,7 +115,7 @@ export default function Home() {
         window.removeEventListener("resize", resizeCanvas);
       };
     };
-    // eslint-disable-next-line
+    
   }, []);
 
   return (
