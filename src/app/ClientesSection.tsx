@@ -1,58 +1,3 @@
-
-// Calcula tempo de empresa desde 07/12/2022 até hoje
-function getTempoEmpresa() {
-  const inicio = new Date(2022, 11, 7); // mês começa em 0 (dezembro = 11)
-  const hoje = new Date();
-  let anos = hoje.getFullYear() - inicio.getFullYear();
-  let meses = hoje.getMonth() - inicio.getMonth();
-  if (meses < 0) {
-    anos--;
-    meses += 12;
-  }
-  if (anos > 0 && meses > 0) {
-    return `${anos} anos e ${meses} meses`;
-  } else if (anos > 0) {
-    return `${anos} anos`;
-  } else {
-    return `${meses} meses`;
-  }
-}
-
-// --- COMO USAR AS LOGOS DOS CLIENTES ---
-// 1. Coloque os arquivos das logos em: /public/clientes/
-//    Exemplo de caminho completo: .../public/clientes/logo-cliente1.png
-// 2. Adicione cada logo no array abaixo, usando o caminho "/clientes/nome-do-arquivo.png"
-// 3. O campo 'alt' é o nome do cliente (para acessibilidade e SEO)
-//
-// Exemplo:
-// { logo: "/clientes/logo-cliente1.png", alt: "Cliente 1" },
-// { logo: "/clientes/logo-cliente2.png", alt: "Cliente 2" },
-
-const clientesLogos: { logo: string; alt: string }[] = [
-  { logo: "/clientes/logo-cliente1.png", alt: "Cliente 1" },
-  { logo: "/clientes/logo-cliente2.jpg", alt: "Cliente 2" },
-  { logo: "/clientes/logo-cliente3.jpg", alt: "Cliente 3" },
-  { logo: "/clientes/logo-cliente4.png", alt: "Cliente 4" },
-  { logo: "/clientes/logo-cliente5.png", alt: "Cliente 5" },
-  { logo: "/clientes/logo-cliente6.jpg", alt: "Cliente 6" },
-  { logo: "/clientes/logo-cliente7.jpg", alt: "Cliente 7" },
-];
-
-// --- COMO USAR AS IMAGENS DE PRÊMIOS ---
-// 1. Coloque as imagens dos prêmios em: /public/premios/
-//    Exemplo de caminho completo: .../public/premios/premio1.png
-// 2. Adicione cada prêmio no array abaixo, usando o caminho "/premios/nome-do-arquivo.png" e um alt descritivo
-//
-// Exemplo:
-// { logo: "/premios/premio1.png", alt: "Prêmio 1" },
-// { logo: "/premios/premio2.png", alt: "Prêmio 2" },
-
-const premios = [
-  { logo: "/clientes/red-belt.svg", alt: "Prêmio Red Belt - Nível Iniciante" },
-  { logo: "/clientes/orange-belt.svg", alt: "Prêmio Orange Belt - Nível Intermediário" },
-  { logo: "/clientes/green-belt.svg", alt: "Prêmio Green Belt - Nível Avançado" },
-];
-
 import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 
@@ -70,8 +15,9 @@ function useCountUp(target: number, duration = 1200, startWhenVisible = true) {
       },
       { threshold: 0.4 }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => { if (ref.current) observer.unobserve(ref.current); };
+    const refValue = ref.current;
+    if (refValue) observer.observe(refValue);
+    return () => { if (refValue) observer.unobserve(refValue); };
   }, [startWhenVisible, started]);
 
   useEffect(() => {
@@ -97,7 +43,6 @@ function useCountUp(target: number, duration = 1200, startWhenVisible = true) {
 
 export default function ClientesSection() {
   const [clientes, clientesRef] = useCountUp(4754, 1400);
-  const [anos, anosRef] = useCountUp(5, 1100);
   const [paises, paisesRef] = useCountUp(7, 1000);
   return (
     <section id="clientes" style={{
@@ -135,7 +80,23 @@ export default function ClientesSection() {
           gap: 80,
           animation: "clientes-scroll 18s linear infinite"
         }}>
-          {clientesLogos.concat(clientesLogos).map((cliente, idx) => (
+          {[
+            { logo: "/clientes/logo-cliente1.png", alt: "Cliente 1" },
+            { logo: "/clientes/logo-cliente2.jpg", alt: "Cliente 2" },
+            { logo: "/clientes/logo-cliente3.jpg", alt: "Cliente 3" },
+            { logo: "/clientes/logo-cliente4.png", alt: "Cliente 4" },
+            { logo: "/clientes/logo-cliente5.png", alt: "Cliente 5" },
+            { logo: "/clientes/logo-cliente6.jpg", alt: "Cliente 6" },
+            { logo: "/clientes/logo-cliente7.jpg", alt: "Cliente 7" },
+          ].concat([
+            { logo: "/clientes/logo-cliente1.png", alt: "Cliente 1" },
+            { logo: "/clientes/logo-cliente2.jpg", alt: "Cliente 2" },
+            { logo: "/clientes/logo-cliente3.jpg", alt: "Cliente 3" },
+            { logo: "/clientes/logo-cliente4.png", alt: "Cliente 4" },
+            { logo: "/clientes/logo-cliente5.png", alt: "Cliente 5" },
+            { logo: "/clientes/logo-cliente6.jpg", alt: "Cliente 6" },
+            { logo: "/clientes/logo-cliente7.jpg", alt: "Cliente 7" },
+          ]).map((cliente, idx) => (
             <div key={idx} style={{ minWidth: 120, minHeight: 60, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Image src={cliente.logo} alt={cliente.alt} width={138} height={69} style={{ objectFit: "contain", filter: "grayscale(0.2)" }} />
             </div>

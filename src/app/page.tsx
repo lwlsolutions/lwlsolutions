@@ -7,7 +7,6 @@ import SolucoesSection from "./SolucoesSection";
 import ClientesSection from "./ClientesSection";
 import ContatoSection from "./ContatoSection";
 import FooterSection from "./FooterSection";
-import Image from "next/image";
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
