@@ -1,4 +1,4 @@
-import React from "react";
+import Image from "next/image";
 import styles from "./page.module.css";
 
 const solucoes = [
@@ -87,9 +87,11 @@ export default function SolucoesSection() {
                 justifyContent: 'center',
                 marginBottom: 18,
               }}>
-                <img 
+                <Image 
                   src={solucao.logo} 
-                  alt={solucao.titulo + " logo"} 
+                  alt={solucao.titulo} 
+                  width={80} 
+                  height={80} 
                   style={{ 
                     maxWidth: solucao.titulo === "Transportes" ? 170 : 150, 
                     maxHeight: 120, 

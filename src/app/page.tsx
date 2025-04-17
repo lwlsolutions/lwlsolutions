@@ -83,7 +83,7 @@ export default function Home() {
 
       function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let p of particles) {
+        for (const p of particles) {
           // Repulsão do mouse
           const dx = mouse.x - p.x;
           const dy = mouse.y - p.y;

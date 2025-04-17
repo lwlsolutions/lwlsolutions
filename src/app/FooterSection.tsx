@@ -1,4 +1,4 @@
-import React from "react";
+import Image from "next/image";
 
 export default function FooterSection() {
   return (
@@ -17,7 +17,7 @@ export default function FooterSection() {
     >
       <div style={{ width: '100%', maxWidth: 1200, padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-          <img src="/logo-lwl-claro.svg" alt="LWL Solutions Logo" style={{ height: 48, maxWidth: 180, objectFit: 'contain', display: 'block' }} />
+          <Image src="/logo-lwl-claro.svg" alt="LWL Solutions Logo" width={180} height={48} />
         </div>
         <div style={{ fontSize: 15, color: '#bbb', marginBottom: 10, textAlign: 'center' }}>
           Tecnologia, inovação e gestão para o campo e a logística.
