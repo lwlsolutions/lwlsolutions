@@ -44,6 +44,12 @@ function useCountUp(target: number, duration = 1200, startWhenVisible = true) {
 export default function ClientesSection() {
   const [clientes, clientesRef] = useCountUp(4754, 1400);
   const [paises, paisesRef] = useCountUp(7, 1000);
+  // Lista de premiações reais
+  const premios = [
+    { logo: "/clientes/red-belt.svg", alt: "Prêmio Red Belt 2023" },
+    { logo: "/clientes/orange-belt.svg", alt: "Prêmio Orange Belt 2024" },
+    { logo: "/clientes/green-belt.svg", alt: "Prêmio Green Belt 2025" },
+  ];
   return (
     <section id="clientes" style={{
       width: "100vw",
@@ -106,18 +112,14 @@ export default function ClientesSection() {
           @keyframes clientes-scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
-          }
-
-          .clientes-carousel {
+          }          .clientes-carousel {
             animation-duration: 30s !important;
           }
           @media (max-width: 600px) {
             .clientes-carousel {
               animation-duration: 15s !important;
             }
-          }
-
-          .clientes-carousel {
+          }          .clientes-carousel {
             width: max-content;
           }
         `}</style>
