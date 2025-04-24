@@ -11,9 +11,9 @@ export const metadata = {
     "Desenvolvemos sistemas de gestão completos para impulsionar a eficiência e o crescimento da sua empresa.",
   generator: 'v0.dev',
   icons: [
-    { rel: 'icon', url: '/favicon.ico' },
-    { rel: 'apple-touch-icon', url: '/favicon.ico' },
-    { rel: 'shortcut icon', url: '/favicon.ico' }
+    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
+    { rel: 'apple-touch-icon', url: '/favicon.svg', type: 'image/svg+xml' },
+    { rel: 'shortcut icon', url: '/favicon.svg', type: 'image/svg+xml' }
   ]
 };
 
