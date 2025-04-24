@@ -1,12 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  swcMinify: true,
   images: {
-    domains: [], // Adicione domínios externos se usar imagens externas
-    unoptimized: true,
-  },
-  trailingSlash: false,
+    domains: [],
+    unoptimized: true
+  }
 };
 
 module.exports = nextConfig;
