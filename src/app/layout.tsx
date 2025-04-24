@@ -9,7 +9,12 @@ export const metadata = {
   title: "LWL Solutions - Soluções em Tecnologia",
   description:
     "Desenvolvemos sistemas de gestão completos para impulsionar a eficiência e o crescimento da sua empresa.",
-  generator: 'v0.dev'
+  generator: 'v0.dev',
+  icons: {
+    icon: ['/favicon.ico'],
+    apple: ['/favicon.ico'],
+    shortcut: ['/favicon.ico']
+  }
 };
 
 export default function RootLayout({

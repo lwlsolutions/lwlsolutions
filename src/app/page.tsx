@@ -56,8 +56,8 @@ export default function Home() {
 
       // Cria partículas apenas onde há branco na logo
       const particles: { x: number; y: number; baseX: number; baseY: number; vx: number; vy: number; }[] = [];
-      // Responsividade: um pouco mais de partículas em telas pequenas
-      const step = canvas.width < 600 ? 4 : 3;
+      // Responsividade: muito mais partículas em telas pequenas para evitar aparência quadriculada
+      const step = canvas.width < 600 ? 2 : 3;
       for (let y = 0; y < canvas.height; y += step) {
         for (let x = 0; x < canvas.width; x += step) {
           const idx = (y * canvas.width + x) * 4;
@@ -78,10 +78,36 @@ export default function Home() {
         if (e.touches.length > 0) {
           mouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         }
+        // Prevenir o comportamento padrão apenas se for um toque na área do canvas
+        if (e.target === canvas) {
+          e.preventDefault();
+        }
       };
+      
+      // Resetar a posição do mouse quando o usuário remove o dedo da tela
+      const handleTouchEnd = () => {
+        // Mover o mouse para fora da área visível
+        mouse = { x: -1000, y: -1000 };
+      };
+      
       window.addEventListener("mousemove", handleMove, { passive: true });
       window.addEventListener("touchmove", handleTouch, { passive: false });
+      window.addEventListener("touchend", handleTouchEnd, { passive: true });
+      window.addEventListener("touchcancel", handleTouchEnd, { passive: true });
+      
+      // Limpar event listeners quando o componente for desmontado
+      return () => {
+        window.removeEventListener("resize", resizeCanvas);
+        window.removeEventListener("mousemove", handleMove);
+        window.removeEventListener("touchmove", handleTouch);
+        window.removeEventListener("touchend", handleTouchEnd);
+        window.removeEventListener("touchcancel", handleTouchEnd);
+        cancelAnimationFrame(animationId);
+      };
 
+      // Declarar a variável animationId no escopo adequado
+      let animationId: number;
+      
       function animate() {
         if (!ctx || !canvas) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -106,7 +132,7 @@ export default function Home() {
           ctx.fillStyle = "white";
           ctx.fillRect(p.x, p.y, 2, 2);
         }
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
       }
       animate();
 
