@@ -6,16 +6,31 @@ const solucoes = [
     titulo: "Transportes",
     descricao: "Sistema para gestão de frota, rotas, manutenção de veículos e acompanhamento em tempo real.",
     logo: "/clientes/logo-transportadorpro.svg",
+    emDesenvolvimento: false,
   },
   {
-    titulo: "Pecuária de Corte",
+    titulo: "Planilha para Pecuária de Corte",
     descricao: "Gestão completa para fazendas de gado de corte: controle de pesagens, manejo sanitário, produtividade e relatórios personalizados.",
     logo: "/clientes/logo-planilha-pecu-pro.png",
+    emDesenvolvimento: false,
   },
   {
-    titulo: "Agricultura",
+    titulo: "Planilha para Agricultura",
     descricao: "Soluções para monitoramento de safras, controle de insumos, planejamento agrícola e análise de resultados.",
     logo: "/clientes/logo-produtor.png",
+    emDesenvolvimento: false,
+  },
+  {
+    titulo: "Software para Pecuária de Corte",
+    descricao: "Sistema completo para gestão de rebanho, controle financeiro, rastreabilidade, manejo sanitário e integração com dispositivos IoT.",
+    logo: "",
+    emDesenvolvimento: true,
+  },
+  {
+    titulo: "Software para Agricultura",
+    descricao: "Plataforma integrada para gestão agrícola com monitoramento por satélite, previsão climática, controle de insumos e análise de produtividade.",
+    logo: "",
+    emDesenvolvimento: true,
   },
 ];
 
@@ -59,6 +74,7 @@ export default function SolucoesSection() {
           gap: 32,
           justifyContent: "center",
           marginTop: 24,
+          width: "100%",
         }}>
           {solucoes.map((solucao) => (
             <div
@@ -69,9 +85,9 @@ export default function SolucoesSection() {
                 borderRadius: 18,
                 boxShadow: "0 2px 16px 0 #0001",
                 padding: 32,
-                maxWidth: 330,
-                minWidth: 260,
-                minHeight: 340,
+                maxWidth: 380,
+                minWidth: 300,
+                minHeight: 400,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -87,20 +103,53 @@ export default function SolucoesSection() {
                 justifyContent: 'center',
                 marginBottom: 18,
               }}>
-                <Image 
-                  src={solucao.logo} 
-                  alt={solucao.titulo} 
-                  width={80} 
-                  height={80} 
-                  style={{ 
-                    maxWidth: solucao.titulo === "Transportes" ? 170 : 150, 
-                    maxHeight: 120, 
-                    minHeight: 80,
-                    objectFit: "contain", 
-                    display: 'block',
-                    margin: '0 auto',
-                  }} 
-                />
+                <div style={{
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 10px auto',
+                }}>
+                  {solucao.logo ? (
+                    <Image 
+                      src={solucao.logo} 
+                      alt={solucao.titulo} 
+                      width={180} 
+                      height={180} 
+                      style={{ 
+                        maxWidth: solucao.titulo.includes("Transportes") ? 280 : 240, 
+                        maxHeight: 180, 
+                        minHeight: 140,
+                        objectFit: "contain", 
+                        display: 'block',
+                        margin: '0 auto',
+                      }} 
+                    />
+                  ) : (
+                    <div style={{
+                      width: 240,
+                      height: 180,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: 20,
+                    }}>
+                      <div style={{
+                        background: '#FFB800',
+                        color: '#000',
+                        fontWeight: 700,
+                        fontSize: '1rem',
+                        padding: '8px 20px',
+                        borderRadius: 12,
+                        textTransform: 'uppercase',
+                        letterSpacing: 0.5,
+                      }}>
+                        Em desenvolvimento
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
               <h3 style={{
                 fontSize: "1.25rem",

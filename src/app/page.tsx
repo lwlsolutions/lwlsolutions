@@ -169,9 +169,9 @@ export default function Home() {
       <div id="main-section">
         <MainSection />
       </div>
+      <ClientesSection />
       <QuemSomosSection />
       <SolucoesSection />
-      <ClientesSection />
       <ContatoSection />
       <FooterSection />
     </>
