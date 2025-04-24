@@ -10,11 +10,11 @@ export const metadata = {
   description:
     "Desenvolvemos sistemas de gestão completos para impulsionar a eficiência e o crescimento da sua empresa.",
   generator: 'v0.dev',
-  icons: {
-    icon: ['/favicon.ico'],
-    apple: ['/favicon.ico'],
-    shortcut: ['/favicon.ico']
-  }
+  icons: [
+    { rel: 'icon', url: '/favicon.ico' },
+    { rel: 'apple-touch-icon', url: '/favicon.ico' },
+    { rel: 'shortcut icon', url: '/favicon.ico' }
+  ]
 };
 
 export default function RootLayout({

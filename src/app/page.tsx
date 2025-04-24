@@ -22,22 +22,26 @@ export default function Home() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    function resizeCanvas() {
-      if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    // Carrega o SVG da logo
-    const img = new window.Image();
+    const img = new Image();
     img.src = "/logo-lwl-claro.svg";
-    img.onload = () => {
-      // Responsividade: logo ocupa até 90vw e 40vh em telas pequenas
+
+    // Variáveis para os event listeners
+    let handleMove: (e: MouseEvent) => void;
+    let handleTouch: (e: TouchEvent) => void;
+    let handleTouchEnd: () => void;
+    let resizeCanvas: () => void;
+    let animationId: number;
+    let particles: { x: number; y: number; baseX: number; baseY: number; vx: number; vy: number; }[] = [];
+    let mouse = { x: 0, y: 0 };
+
+    const setupParticles = () => {
+      if (!ctx || !canvas) return;
+
+      // Centraliza a logo
       const maxLogoW = Math.min(canvas.width * 0.9, 600);
       const maxLogoH = Math.min(canvas.height * 0.4, (maxLogoW * 1473.18) / 2539.98);
       const logoW = maxLogoW;
@@ -49,101 +53,124 @@ export default function Home() {
       const tempCanvas = document.createElement("canvas");
       tempCanvas.width = canvas.width;
       tempCanvas.height = canvas.height;
-      const tempCtx = tempCanvas.getContext("2d")!;
+      const tempCtx = tempCanvas.getContext("2d");
+      if (!tempCtx) return;
+      
       tempCtx.clearRect(0, 0, canvas.width, canvas.height);
       tempCtx.drawImage(img, logoX, logoY, logoW, logoH);
       const imageData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
 
+      // Limpa o array de partículas existente
+      particles = [];
+      
       // Cria partículas apenas onde há branco na logo
-      const particles: { x: number; y: number; baseX: number; baseY: number; vx: number; vy: number; }[] = [];
       // Responsividade: muito mais partículas em telas pequenas para evitar aparência quadriculada
       const step = canvas.width < 600 ? 2 : 3;
       for (let y = 0; y < canvas.height; y += step) {
         for (let x = 0; x < canvas.width; x += step) {
           const idx = (y * canvas.width + x) * 4;
-          const [r, g, b, a] = [imageData.data[idx], imageData.data[idx+1], imageData.data[idx+2], imageData.data[idx+3]];
-          // Considera pixels suficientemente claros como "brancos" da logo
-          if (a > 128 && r > 180 && g > 180 && b > 180) {
-            particles.push({ x, y, baseX: x, baseY: y, vx: 0, vy: 0 });
+          // Se o pixel for branco (ou quase branco)
+          if (
+            imageData.data[idx] > 200 &&
+            imageData.data[idx + 1] > 200 &&
+            imageData.data[idx + 2] > 200
+          ) {
+            particles.push({
+              x: x + Math.random() * 5 - 2.5,
+              y: y + Math.random() * 5 - 2.5,
+              baseX: x,
+              baseY: y,
+              vx: 0,
+              vy: 0,
+            });
           }
         }
       }
+    };
 
-      // Animação
-      let mouse = { x: -1000, y: -1000 };
-      const handleMove = (e: MouseEvent) => {
-        mouse = { x: e.clientX, y: e.clientY };
-      };
-      const handleTouch = (e: TouchEvent) => {
-        if (e.touches.length > 0) {
-          mouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        }
-        // Prevenir o comportamento padrão apenas se for um toque na área do canvas
-        if (e.target === canvas) {
-          e.preventDefault();
-        }
-      };
+    const animate = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Resetar a posição do mouse quando o usuário remove o dedo da tela
-      const handleTouchEnd = () => {
-        // Mover o mouse para fora da área visível
-        mouse = { x: -1000, y: -1000 };
-      };
+      for (const p of particles) {
+        // Repulsão do mouse
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          const angle = Math.atan2(dy, dx);
+          p.vx -= Math.cos(angle) * 1.5;
+          p.vy -= Math.sin(angle) * 1.5;
+        }
+
+        // Força de retorno à posição original
+        p.vx += (p.baseX - p.x) * 0.02;
+        p.vy += (p.baseY - p.y) * 0.02;
+        // Fricção
+        p.vx *= 0.92;
+        p.vy *= 0.92;
+        p.x += p.vx;
+        p.y += p.vy;
+        ctx.fillStyle = "white";
+        ctx.fillRect(p.x, p.y, 2, 2);
+      }
       
+      animationId = requestAnimationFrame(animate);
+    };
+
+    // Função para redimensionar o canvas
+    resizeCanvas = () => {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      // Redesenhar tudo quando o tamanho mudar
+      setupParticles();
+    };
+
+    // Handlers para mouse e touch
+    handleMove = (e: MouseEvent) => {
+      mouse = { x: e.clientX, y: e.clientY };
+    };
+    
+    handleTouch = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        mouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+      // Prevenir o comportamento padrão apenas se for um toque na área do canvas
+      if (e.target === canvas) {
+        e.preventDefault();
+      }
+    };
+    
+    handleTouchEnd = () => {
+      // Mover o mouse para fora da área visível
+      mouse = { x: -1000, y: -1000 };
+    };
+
+    // Quando a imagem carregar, configurar tudo
+    img.onload = () => {
+      resizeCanvas();
+      setupParticles();
+      animate();
+      
+      window.addEventListener("resize", resizeCanvas);
       window.addEventListener("mousemove", handleMove, { passive: true });
       window.addEventListener("touchmove", handleTouch, { passive: false });
       window.addEventListener("touchend", handleTouchEnd, { passive: true });
       window.addEventListener("touchcancel", handleTouchEnd, { passive: true });
-      
-      // Limpar event listeners quando o componente for desmontado
-      return () => {
-        window.removeEventListener("resize", resizeCanvas);
-        window.removeEventListener("mousemove", handleMove);
-        window.removeEventListener("touchmove", handleTouch);
-        window.removeEventListener("touchend", handleTouchEnd);
-        window.removeEventListener("touchcancel", handleTouchEnd);
-        cancelAnimationFrame(animationId);
-      };
-
-      // Declarar a variável animationId no escopo adequado
-      let animationId: number;
-      
-      function animate() {
-        if (!ctx || !canvas) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (const p of particles) {
-          // Repulsão do mouse
-          const dx = mouse.x - p.x;
-          const dy = mouse.y - p.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            const angle = Math.atan2(dy, dx);
-            p.vx -= Math.cos(angle) * 1.5;
-            p.vy -= Math.sin(angle) * 1.5;
-          }
-          // Retorno para a base
-          p.vx += (p.baseX - p.x) * 0.02;
-          p.vy += (p.baseY - p.y) * 0.02;
-          // Fricção
-          p.vx *= 0.92;
-          p.vy *= 0.92;
-          p.x += p.vx;
-          p.y += p.vy;
-          ctx.fillStyle = "white";
-          ctx.fillRect(p.x, p.y, 2, 2);
-        }
-        animationId = requestAnimationFrame(animate);
-      }
-      animate();
-
-      // Limpeza
-      return () => {
-        window.removeEventListener("mousemove", handleMove);
-        window.removeEventListener("touchmove", handleTouch);
-        window.removeEventListener("resize", resizeCanvas);
-      };
     };
-    
+
+    // Limpeza ao desmontar o componente
+    return () => {
+      window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("touchmove", handleTouch);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("touchcancel", handleTouchEnd);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
   }, []);
 
   return (
