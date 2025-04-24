@@ -30,6 +30,10 @@ export default function Home() {
     img.src = "/logo-lwl-claro.svg";
 
     // Variáveis para os event listeners
+    // Variável para detectar se o usuário está rolando a página
+    let isScrolling = false;
+    let scrollTimeout: NodeJS.Timeout;
+    
     const handleMove: (e: MouseEvent) => void = (e: MouseEvent) => {
       mouse = { x: e.clientX, y: e.clientY };
     };
@@ -38,10 +42,9 @@ export default function Home() {
       if (e.touches.length > 0) {
         mouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       }
-      // Prevenir o comportamento padrão apenas se for um toque na área do canvas
-      if (e.target === canvas) {
-        e.preventDefault();
-      }
+      
+      // IMPORTANTE: NÃO prevenir o comportamento padrão para permitir rolagem normal
+      // Apenas interagir com as partículas sem interferir na rolagem
     };
     
     const handleTouchEnd: () => void = () => {
@@ -110,19 +113,35 @@ export default function Home() {
       }
     };
 
+    // Função para detectar quando o usuário começa a rolar a página
+    const handleScroll = () => {
+      isScrolling = true;
+      
+      // Limpar o timeout anterior
+      clearTimeout(scrollTimeout);
+      
+      // Definir um novo timeout
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 150); // Considerar que a rolagem parou após 150ms sem eventos de rolagem
+    };
+    
     const animate = () => {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      // Reduzir a intensidade da animação durante a rolagem
+      const interactionFactor = isScrolling ? 0.2 : 1.0;
+      
       for (const p of particles) {
-        // Repulsão do mouse
+        // Repulsão do mouse (reduzida durante a rolagem)
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 120) {
           const angle = Math.atan2(dy, dx);
-          p.vx -= Math.cos(angle) * 1.5;
-          p.vy -= Math.sin(angle) * 1.5;
+          p.vx -= Math.cos(angle) * 1.5 * interactionFactor;
+          p.vy -= Math.sin(angle) * 1.5 * interactionFactor;
         }
 
         // Força de retorno à posição original
@@ -149,8 +168,10 @@ export default function Home() {
       animate();
       
       window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("scroll", handleScroll, { passive: true });
       window.addEventListener("mousemove", handleMove, { passive: true });
-      window.addEventListener("touchmove", handleTouch, { passive: false });
+      // Usar passive: true para garantir que a rolagem funcione normalmente
+      window.addEventListener("touchmove", handleTouch, { passive: true });
       window.addEventListener("touchend", handleTouchEnd, { passive: true });
       window.addEventListener("touchcancel", handleTouchEnd, { passive: true });
     };
@@ -158,6 +179,7 @@ export default function Home() {
     // Limpeza ao desmontar o componente
     return () => {
       window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("touchmove", handleTouch);
       window.removeEventListener("touchend", handleTouchEnd);
