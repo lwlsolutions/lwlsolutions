@@ -219,8 +219,8 @@ export default function MainSection() {
             <div className="MainSection-partners-carousel" style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 60,
-              animation: 'parceiros-scroll 18s linear infinite',
+              gap: 30, /* Reduzir ainda mais o espaçamento entre logos */
+              animation: 'parceiros-scroll 10s linear infinite', /* Acelerar ainda mais a animação */
             }}>
               {(() => {
                 // Dynamically import all SVGs from /public/parceiros
@@ -233,8 +233,8 @@ export default function MainSection() {
                   // Alt automático pelo nome do arquivo
                   const alt = file.replace('.svg', '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                   return (
-                    <div key={idx} style={{ minWidth: 90, minHeight: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Image src={`/parceiros/${file}`} alt={alt} width={90} height={40} style={{ objectFit: 'contain', filter: 'grayscale(0.2)' }} />
+                    <div key={idx} style={{ minWidth: 85, minHeight: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Image src={`/parceiros/${file}`} alt={alt} width={85} height={40} style={{ objectFit: 'contain', filter: 'grayscale(0.2)' }} />
                     </div>
                   );
                 });
@@ -248,11 +248,13 @@ export default function MainSection() {
               100% { transform: translateX(-50%); }
             }
             .MainSection-partners-carousel {
-              animation-duration: 18s !important;
+              animation-duration: 10s !important; /* Ainda mais rápido para mostrar todos os parceiros */
+              width: max-content; /* Garantir que todos os itens sejam exibidos */
             }
             @media (max-width: 600px) {
               .MainSection-partners-carousel {
-                animation-duration: 15s !important;
+                animation-duration: 8s !important;
+                gap: 20px !important;
               }
             }
           `}</style>
