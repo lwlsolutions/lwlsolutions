@@ -26,6 +26,7 @@ export default function Home() {
     if (!ctx) return;
 
     function resizeCanvas() {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
@@ -82,6 +83,7 @@ export default function Home() {
       window.addEventListener("touchmove", handleTouch, { passive: false });
 
       function animate() {
+        if (!ctx || !canvas) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (const p of particles) {
           // Repulsão do mouse
