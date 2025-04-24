@@ -30,10 +30,32 @@ export default function Home() {
     img.src = "/logo-lwl-claro.svg";
 
     // Variáveis para os event listeners
-    let handleMove: (e: MouseEvent) => void;
-    let handleTouch: (e: TouchEvent) => void;
-    let handleTouchEnd: () => void;
-    let resizeCanvas: () => void;
+    const handleMove: (e: MouseEvent) => void = (e: MouseEvent) => {
+      mouse = { x: e.clientX, y: e.clientY };
+    };
+    
+    const handleTouch: (e: TouchEvent) => void = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        mouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+      // Prevenir o comportamento padrão apenas se for um toque na área do canvas
+      if (e.target === canvas) {
+        e.preventDefault();
+      }
+    };
+    
+    const handleTouchEnd: () => void = () => {
+      // Mover o mouse para fora da área visível
+      mouse = { x: -1000, y: -1000 };
+    };
+    
+    const resizeCanvas: () => void = () => {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      // Redesenhar tudo quando o tamanho mudar
+      setupParticles();
+    };
     let animationId: number;
     let particles: { x: number; y: number; baseX: number; baseY: number; vx: number; vy: number; }[] = [];
     let mouse = { x: 0, y: 0 };
@@ -118,34 +140,7 @@ export default function Home() {
       animationId = requestAnimationFrame(animate);
     };
 
-    // Função para redimensionar o canvas
-    resizeCanvas = () => {
-      if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      // Redesenhar tudo quando o tamanho mudar
-      setupParticles();
-    };
 
-    // Handlers para mouse e touch
-    handleMove = (e: MouseEvent) => {
-      mouse = { x: e.clientX, y: e.clientY };
-    };
-    
-    handleTouch = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        mouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      }
-      // Prevenir o comportamento padrão apenas se for um toque na área do canvas
-      if (e.target === canvas) {
-        e.preventDefault();
-      }
-    };
-    
-    handleTouchEnd = () => {
-      // Mover o mouse para fora da área visível
-      mouse = { x: -1000, y: -1000 };
-    };
 
     // Quando a imagem carregar, configurar tudo
     img.onload = () => {
