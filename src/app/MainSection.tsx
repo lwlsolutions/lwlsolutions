@@ -220,7 +220,7 @@ export default function MainSection() {
               display: 'flex',
               alignItems: 'center',
               gap: 60,
-              animation: 'parceiros-scroll 30s linear infinite',
+              animation: 'parceiros-scroll 18s linear infinite',
             }}>
               {(() => {
                 // Dynamically import all SVGs from /public/parceiros
@@ -248,7 +248,7 @@ export default function MainSection() {
               100% { transform: translateX(-50%); }
             }
             .MainSection-partners-carousel {
-              animation-duration: 30s !important;
+              animation-duration: 18s !important;
             }
             @media (max-width: 600px) {
               .MainSection-partners-carousel {
