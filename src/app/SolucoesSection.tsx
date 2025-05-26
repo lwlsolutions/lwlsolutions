@@ -1,5 +1,6 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import Link from "next/link";
 
 const solucoes = [
   {
@@ -7,30 +8,35 @@ const solucoes = [
     descricao: "Sistema para gestão de frota, rotas, manutenção de veículos e acompanhamento em tempo real.",
     logo: "/clientes/logo-transportadorpro.svg",
     emDesenvolvimento: false,
+    link: "https://transportadorpro.com"
   },
   {
     titulo: "Planilha para Pecuária de Corte",
     descricao: "Gestão completa para fazendas de gado de corte: controle de pesagens, manejo sanitário, produtividade e relatórios personalizados.",
     logo: "/clientes/logo-planilha-pecu-pro.png",
     emDesenvolvimento: false,
+    link: "https://pecuaristapro.com"
   },
   {
     titulo: "Planilha para Agricultura",
     descricao: "Soluções para monitoramento de safras, controle de insumos, planejamento agrícola e análise de resultados.",
     logo: "/clientes/logo-produtor.png",
     emDesenvolvimento: false,
+    link: "https://planilhadoprodutordesoja.com"
   },
   {
     titulo: "Software para Pecuária de Corte",
     descricao: "Sistema completo para gestão de rebanho, controle financeiro, rastreabilidade, manejo sanitário e integração com dispositivos IoT.",
     logo: "",
     emDesenvolvimento: true,
+    link: ""
   },
   {
     titulo: "Software para Agricultura",
     descricao: "Plataforma integrada para gestão agrícola com monitoramento por satélite, previsão climática, controle de insumos e análise de produtividade.",
     logo: "",
     emDesenvolvimento: true,
+    link: ""
   },
 ];
 
@@ -94,6 +100,12 @@ export default function SolucoesSection() {
                 justifyContent: "flex-start",
                 position: "relative",
                 transition: "transform 0.2s, box-shadow 0.2s",
+                cursor: solucao.emDesenvolvimento ? "default" : "pointer",
+              }}
+              onClick={() => {
+                if (solucao.link && !solucao.emDesenvolvimento) {
+                  window.open(solucao.link, "_blank");
+                }
               }}
             >
               <div style={{
@@ -163,8 +175,38 @@ export default function SolucoesSection() {
                 color: "#444",
                 textAlign: "center",
                 fontWeight: 400,
-                marginBottom: 0,
+                marginBottom: solucao.link && !solucao.emDesenvolvimento ? 20 : 0,
               }}>{solucao.descricao}</p>
+              
+              {solucao.link && !solucao.emDesenvolvimento && (
+                <div style={{
+                  marginTop: 'auto',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '100%'
+                }}>
+                  <a 
+                    href={solucao.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-block',
+                      background: '#0070f3',
+                      color: '#fff',
+                      padding: '8px 20px',
+                      borderRadius: 8,
+                      textDecoration: 'none',
+                      fontWeight: 600,
+                      fontSize: '0.9rem',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.background = '#0051b3'}
+                    onMouseOut={(e) => e.currentTarget.style.background = '#0070f3'}
+                  >
+                    Visitar site
+                  </a>
+                </div>
+              )}
             </div>
           ))}
         </div>
